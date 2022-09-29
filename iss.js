@@ -34,13 +34,33 @@ const fetchCoordsByIP = function(ip, callback) {
     let coordinates = {};
     coordinates.latitude = ipData.latitude;
     coordinates.longitude = ipData.longitude;
-    callback(error, coordinates);
+    callback(null, coordinates);
     return;
   });
 
 };
 
+const fetchISSFlyOverTimes = function(coords, callback) {
+  const request = require('request');
+  request(`https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
+    const flyData = JSON.parse(body);
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (response.statusCode !== 200) {
+      callback(Error(`Status Code ${response.statusCode} when fetching ISS pass times: ${body}`), null);
+      return;
+    }
+    let responses = [];
+    responses = flyData.response;
+    callback(null, responses);
+    return;
+  });
+};
+
 module.exports = {
   fetchMyIP,
   fetchCoordsByIP,
+  fetchISSFlyOverTimes
 };
