@@ -1,11 +1,3 @@
-/**
- * Makes a single API request to retrieve the user's IP address.
- * Input:
- *   - A callback (to pass back an error or the IP string)
- * Returns (via Callback):
- *   - An error, if any (nullable)
- *   - The IP address as a string (null if error). Example: "162.245.144.188"
- */
 const fetchMyIP = function(callback) {
   const request = require('request');
   request('https://api.ipify.org?format=json', (error, response, body) => {
@@ -26,4 +18,29 @@ const fetchMyIP = function(callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip, callback) {
+  const request = require('request');
+  request(`http://ipwho.is/${ip}`, (error, response, body) => {
+    const ipData = JSON.parse(body);
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    if (!ipData.success) {
+      const message = `Success status was ${ipData.success}. Server message says: ${ipData.message} when fetching for IP ${ipData.ip}`;
+      callback(Error(message), null);
+      return;
+    }
+    let coordinates = {};
+    coordinates.latitude = ipData.latitude;
+    coordinates.longitude = ipData.longitude;
+    callback(error, coordinates);
+    return;
+  });
+
+};
+
+module.exports = {
+  fetchMyIP,
+  fetchCoordsByIP,
+};
