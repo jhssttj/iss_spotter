@@ -1,4 +1,4 @@
-const fetchMyIP = function (callback) {
+const fetchMyIP = function(callback) {
   const request = require('request');
   request('https://api.ipify.org?format=json', (error, response, body) => {
     const ipData = JSON.parse(body);
@@ -18,7 +18,7 @@ const fetchMyIP = function (callback) {
   });
 };
 
-const fetchCoordsByIP = function (ip, callback) {
+const fetchCoordsByIP = function(ip, callback) {
   const request = require('request');
   request(`http://ipwho.is/${ip}`, (error, response, body) => {
     const ipData = JSON.parse(body);
@@ -40,7 +40,7 @@ const fetchCoordsByIP = function (ip, callback) {
 
 };
 
-const fetchISSFlyOverTimes = function (coords, callback) {
+const fetchISSFlyOverTimes = function(coords, callback) {
   const request = require('request');
   request(`https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
     const flyData = JSON.parse(body);
@@ -59,7 +59,7 @@ const fetchISSFlyOverTimes = function (coords, callback) {
   });
 };
 
-const nextISSTimesForMyLocation = function (callback) {
+const nextISSTimesForMyLocation = function(callback) {
   fetchMyIP((error, ip) => {
     if (error) {
       callback(error, null);
@@ -76,9 +76,9 @@ const nextISSTimesForMyLocation = function (callback) {
           return;
         }
         callback(null, response);
-      })
-    })
-  })
+      });
+    });
+  });
 };
 
 module.exports = {
